@@ -67,7 +67,7 @@ func ClaudeHelper(c *gin.Context, info *relaycommon.RelayInfo) (newAPIError *typ
 			request.TopP = nil
 			request.TopK = nil
 		} else {
-			request.Temperature = common.GetPointer[float64](1.0)
+			request.Temperature = common.GetPointer(1.0)
 		}
 		info.UpstreamModelName = request.Model
 	} else if model_setting.GetClaudeSettings().ThinkingAdapterEnabled &&
@@ -94,7 +94,7 @@ func ClaudeHelper(c *gin.Context, info *relaycommon.RelayInfo) (newAPIError *typ
 				}
 				// TODO: 临时处理
 				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking#important-considerations-when-using-extended-thinking
-				request.Temperature = common.GetPointer[float64](1.0)
+				request.Temperature = common.GetPointer(1.0)
 			}
 		}
 		if !model_setting.ShouldPreserveThinkingSuffix(info.OriginModelName) {
