@@ -85,12 +85,28 @@ func InitEnv() {
 	NodeName = os.Getenv("NODE_NAME")
 	TLSInsecureSkipVerify = GetEnvOrDefaultBool("TLS_INSECURE_SKIP_VERIFY", false)
 	if TLSInsecureSkipVerify {
-		if tr, ok := http.DefaultTransport.(*http.Transport); ok && tr != nil {
-			if tr.TLSClientConfig != nil {
+		TLSConfig.InsecureSkipVerify = true
+	}
+	SSLKeyLogFile = GetEnvOrDefaultString("SSLKEYLOGFILE", "")
+	if SSLKeyLogFile != "" {
+		f, err := os.OpenFile(SSLKeyLogFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
+		if err != nil {
+			SysError(fmt.Sprintf("open keylog file failed:%s", err))
+			return
+		}
+		TLSConfig.KeyLogWriter = f
+	}
+
+	if tr, ok := http.DefaultTransport.(*http.Transport); ok && tr != nil {
+		if tr.TLSClientConfig != nil {
+			if TLSInsecureSkipVerify {
 				tr.TLSClientConfig.InsecureSkipVerify = true
-			} else {
-				tr.TLSClientConfig = InsecureTLSConfig
 			}
+			if SSLKeyLogFile != "" {
+				tr.TLSClientConfig.KeyLogWriter = TLSConfig.KeyLogWriter
+			}
+		} else {
+			tr.TLSClientConfig = TLSConfig.Clone()
 		}
 	}
 

@@ -98,10 +98,9 @@ func newHTTPClient() *http.Client {
 		TLSHandshakeTimeout:   time.Duration(timeoutSec) * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
 		ResponseHeaderTimeout: time.Duration(timeoutSec) * time.Second,
+		TLSClientConfig:       common.TLSConfig,
 	}
-	if common.TLSInsecureSkipVerify {
-		transport.TLSClientConfig = common.InsecureTLSConfig
-	}
+
 	transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
 		host, _, err := net.SplitHostPort(addr)
 		if err != nil {

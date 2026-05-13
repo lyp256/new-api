@@ -114,8 +114,12 @@ var MemoryCacheEnabled bool
 
 var LogConsumeEnabled = true
 
+var TLSConfig = &tls.Config{}
+
+
 var TLSInsecureSkipVerify bool
-var InsecureTLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+var SSLKeyLogFile = ""
 
 var SMTPServer = ""
 var SMTPPort = 587
